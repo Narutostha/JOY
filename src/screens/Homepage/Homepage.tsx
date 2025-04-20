@@ -7,12 +7,13 @@ import { TopSelling } from "./sections/TopSelling/TopSelling";
 import { PaymentOptions } from "./sections/PaymentOptions/PaymentOptions";
 import { NewsletterSection } from "./sections/NewsletterSection/NewsletterSection";
 import { FooterSection } from "./sections/FooterSection/FooterSection";
+import { FloatingCart } from "../../components/FloatingCart";
 
 export const Homepage = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavbarSection />
-      <main>
+      <main className="pt-[150px] sm:pt-[170px] md:pt-[80px]">
         <HeroSection />
         <PopularCategories />
         <NewArrivals />
@@ -20,6 +21,7 @@ export const Homepage = () => {
         <PaymentOptions />
         <NewsletterSection />
       </main>
+      <FloatingCart />
       <FooterSection />
     </div>
   );

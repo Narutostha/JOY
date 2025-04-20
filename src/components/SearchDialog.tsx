@@ -6,16 +6,15 @@ import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { searchQueryAtom, isSearchOpenAtom } from '../store/search';
 import { X, Search, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import { PRODUCTS_DATA } from '../store/products';
 
-// Mock recent searches - in a real app, store these in localStorage or in your state management
 const RECENT_SEARCHES = ['Camera lens', 'Wireless headphones', 'Smart watch'];
 
-// Mock trending products - in a real app, fetch these from an API
-const TRENDING_PRODUCTS = [
-  { id: 1, name: 'iPhone 15 Pro', category: 'Smartphones' },
-  { id: 2, name: 'Sony WH-1000XM5', category: 'Headphones' },
-  { id: 3, name: 'MacBook Air M3', category: 'Laptops' },
-];
+const TRENDING_PRODUCTS = PRODUCTS_DATA.slice(0, 3).map(product => ({
+  id: product.id,
+  name: product.name,
+  category: product.category
+}));
 
 export const SearchDialog = () => {
   const navigate = useNavigate();
@@ -24,19 +23,15 @@ export const SearchDialog = () => {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [activeTab, setActiveTab] = useState('trending');
 
-  // Handle form submission
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
       setIsOpen(false);
-      // In a real app, save to recent searches here
     }
   };
 
-  // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Handle up/down arrow keys for navigating suggestions
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       const maxIndex = activeTab === 'trending' 
@@ -60,14 +55,12 @@ export const SearchDialog = () => {
     }
   };
 
-  // Reset focused index when dialog closes
   useEffect(() => {
     if (!isOpen) {
       setFocusedIndex(-1);
     }
   }, [isOpen]);
 
-  // Auto-focus the input when dialog opens
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
@@ -80,17 +73,16 @@ export const SearchDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[650px] p-0 rounded-xl overflow-hidden border-0 shadow-2xl">
-        <DialogTitle className="sr-only">Search TechStore</DialogTitle>
+        <DialogTitle className="sr-only">Search Products</DialogTitle>
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
           className="bg-white dark:bg-gray-900"
         >
-          {/* Header */}
           <div className="p-6 pb-4 border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Search TechStore</h2>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Search Products</h2>
               <button
                 onClick={() => setIsOpen(false)}
                 className="rounded-full p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -100,7 +92,6 @@ export const SearchDialog = () => {
               </button>
             </div>
             
-            {/* Search Form */}
             <form onSubmit={handleSearch} className="relative mt-4">
               <Input
                 type="search"
@@ -124,7 +115,6 @@ export const SearchDialog = () => {
             </form>
           </div>
           
-          {/* Tabs */}
           <div className="flex border-b border-gray-100 dark:border-gray-800">
             <button
               onClick={() => setActiveTab('trending')}
@@ -150,7 +140,6 @@ export const SearchDialog = () => {
             </button>
           </div>
           
-          {/* Content */}
           <div className="p-6 max-h-[400px] overflow-y-auto">
             <AnimatePresence mode="wait">
               {activeTab === 'trending' ? (
@@ -219,8 +208,6 @@ export const SearchDialog = () => {
                     <button 
                       className="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                       onClick={() => {
-                        // In a real app, clear recent searches from storage
-                        // For now, we'll just switch tabs
                         setActiveTab('trending');
                       }}
                     >
@@ -263,7 +250,6 @@ export const SearchDialog = () => {
             </AnimatePresence>
           </div>
           
-          {/* Footer with keyboard shortcuts */}
           <div className="px-6 py-3 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">

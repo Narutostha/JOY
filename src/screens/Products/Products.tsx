@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import NavbarSection from "../Homepage/sections/NavbarSection/NavbarSection";
 import { FooterSection } from "../Homepage/sections/FooterSection/FooterSection";
 import { NewsletterSection } from "../Homepage/sections/NewsletterSection";
 import { FilterSection } from "../NewArrivals/Sections/FilterSection/FilterSection";
 import { ProductsGridSection } from "../NewArrivals/Sections/ProductGridSection/ProductGridSection";
 import { PaginationSection } from "../NewArrivals/Sections/PaginationSection/PaginationSection";
+import { FloatingCart } from "../../components/FloatingCart";
+import { FloatingFilterButton } from "../../components/FloatingFilterButton";
 import { useProducts } from "../../hooks/useProducts";
 import { getUniqueCategories, getUniqueSubcategories } from "../../store/products";
+import { X } from "lucide-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -34,9 +37,22 @@ export const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [showFilters, setShowFilters] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const productsPerPage = 8;
 
-  // Update filters when category changes
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth >= 768) {
+        setShowFilters(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     if (category) {
       updateFilters({
@@ -48,7 +64,6 @@ export const Products = () => {
     }
   }, [category]);
 
-  // Calculate pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products?.slice(indexOfFirstProduct, indexOfLastProduct) || [];
@@ -69,14 +84,9 @@ export const Products = () => {
     <div className="bg-gray-50">
       <NavbarSection />
       
-      <motion.div 
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="min-h-screen"
-      >
+      <div className="min-h-screen pt-[150px] sm:pt-[170px] md:pt-[80px]">
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 mt-[150px] sm:mt-[170px] md:mt-[80px]">
+        <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-90"></div>
@@ -97,7 +107,6 @@ export const Products = () => {
               Discover our amazing collection of {category?.toLowerCase() || "products"} from top brands around the world.
             </motion.p>
 
-            {/* Breadcrumb */}
             <motion.nav 
               variants={itemVariants}
               className="mt-8 flex justify-center"
@@ -124,19 +133,42 @@ export const Products = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row gap-8">
-            {/* Filter Section */}
-            <motion.div
-              variants={itemVariants}
-              className="md:w-80"
-            >
-              <FilterSection 
-                categories={getUniqueCategories()}
-                subcategories={category ? getUniqueSubcategories(category) : []}
-                filters={filters}
-                updateFilters={updateFilters}
-                resetFilters={resetFilters}
-              />
-            </motion.div>
+            {/* Filter Section - Desktop */}
+            <AnimatePresence>
+              {(!isMobile || showFilters) && (
+                <motion.div
+                  initial={isMobile ? { x: -300 } : false}
+                  animate={{ x: 0 }}
+                  exit={isMobile ? { x: -300 } : false}
+                  className={`${
+                    isMobile
+                      ? 'fixed inset-0 z-50 bg-white overflow-y-auto'
+                      : 'md:w-80'
+                  }`}
+                >
+                  {isMobile && (
+                    <div className="sticky top-0 z-10 bg-white p-4 border-b flex justify-between items-center">
+                      <h2 className="text-lg font-semibold">Filters</h2>
+                      <button
+                        onClick={() => setShowFilters(false)}
+                        className="p-2 hover:bg-gray-100 rounded-full"
+                      >
+                        <X className="h-6 w-6" />
+                      </button>
+                    </div>
+                  )}
+                  <div className={isMobile ? 'p-4' : ''}>
+                    <FilterSection 
+                      categories={getUniqueCategories()}
+                      subcategories={category ? getUniqueSubcategories(category) : []}
+                      filters={filters}
+                      updateFilters={updateFilters}
+                      resetFilters={resetFilters}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             
             {/* Products Grid Section */}
             <motion.div 
@@ -174,7 +206,13 @@ export const Products = () => {
             </motion.div>
           </div>
         </div>
-      </motion.div>
+      </div>
+      
+      <FloatingCart />
+      <FloatingFilterButton 
+        onClick={() => setShowFilters(true)}
+        isVisible={isMobile && !showFilters}
+      />
       
       <NewsletterSection />
       <FooterSection />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ChevronDownIcon, ShoppingCartIcon, UserIcon, MenuIcon, XIcon, SearchIcon, Heart, Phone } from "lucide-react";
+import { ChevronDownIcon, ShoppingCartIcon, UserIcon, MenuIcon, XIcon, SearchIcon, Heart, Phone, Package } from "lucide-react";
 import { SearchDialog } from "../../../../components/SearchDialog";
 import { ProfileMenu } from "../../../../components/ProfileMenu";
 import { useAtom } from 'jotai';
@@ -19,11 +19,11 @@ const navItems: NavItem[] = [
     name: "Apple",
     hasDropdown: true,
     dropdownItems: [
-      { name: "iPhone", link: "/products/iphone" },
-      { name: "iPad", link: "/products/ipad" },
-      { name: "MacBook", link: "/products/macbook" },
-      { name: "Apple Watch", link: "/products/apple-watch" },
-      { name: "AirPods", link: "/products/airpods" }
+      { name: "iPhone", link: "/products?category=iphone" },
+      { name: "iPad", link: "/products?category=ipad" },
+      { name: "MacBook", link: "/products?category=macbook" },
+      { name: "Apple Watch", link: "/products?category=apple-watch" },
+      { name: "AirPods", link: "/products?category=airpods" }
     ]
   },
   {
@@ -100,14 +100,13 @@ const navItems: NavItem[] = [
   }
 ];
 
-export const Navbar: React.FC = () => {
+export const NavbarSection: React.FC = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [cartCount] = useAtom(cartCountAtom);
   const [, setIsSearchOpen] = useAtom(isSearchOpenAtom);
-  const [showCategories, setShowCategories] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -127,7 +126,9 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-white shadow-sm transition-all duration-300 ${
+      scrolled ? 'shadow-md' : ''
+    }`}>
       {/* Top Bar */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -179,30 +180,28 @@ export const Navbar: React.FC = () => {
               <img
                 src="/public/finalll.png"
                 alt="Joy Store"
-                className="h-12 w-auto"
+                className="h-8 sm:h-10 md:h-12 w-auto object-contain"
               />
-              
             </Link>
 
             {/* Search Bar */}
             <div className="hidden lg:flex flex-1 max-w-2xl mx-8">
               <div className="relative w-full">
-                <button
-                  onClick={() => setShowCategories(!showCategories)}
-                  className="absolute left-0 top-0 h-full px-4 flex items-center bg-gray-100 rounded-l-lg border-r border-gray-200"
-                >
-                  Categories
-                  <ChevronDownIcon className="ml-2 h-4 w-4" />
-                </button>
                 <input
                   type="text"
-                  placeholder="Search..."
-                  className="w-full pl-32 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  onClick={() => setIsSearchOpen(true)}
+                  placeholder="Search products..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  onClick={() => {
+                    setIsSearchOpen(true);
+                    navigate('/products');
+                  }}
                 />
                 <button
-                  className="absolute right-0 top-0 h-full px-4 text-gray-400 hover:text-gray-600"
-                  onClick={() => setIsSearchOpen(true)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  onClick={() => {
+                    setIsSearchOpen(true);
+                    navigate('/products');
+                  }}
                 >
                   <SearchIcon className="h-5 w-5" />
                 </button>
@@ -214,14 +213,20 @@ export const Navbar: React.FC = () => {
               <button className="hidden lg:flex items-center px-4 py-2 bg-[#AD5C10] text-white rounded-lg">
                 Special Deals
               </button>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm">NPR Currency</span>
-                <ChevronDownIcon className="h-4 w-4" />
-              </div>
+              <span className="text-sm font-medium">₨</span>
               <div className="flex items-center space-x-4">
-                <button onClick={() => setIsSearchOpen(true)} className="lg:hidden">
+                <button 
+                  onClick={() => {
+                    setIsSearchOpen(true);
+                    navigate('/products');
+                  }} 
+                  className="lg:hidden"
+                >
                   <SearchIcon className="h-6 w-6" />
                 </button>
+                <Link to="/products" className="hover:text-indigo-600">
+                  <Package className="h-6 w-6" />
+                </Link>
                 <Link to="/wishlist">
                   <Heart className="h-6 w-6" />
                 </Link>
@@ -293,8 +298,8 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200">
-          <div className="px-4 py-2 space-y-1">
+        <div className="lg:hidden bg-white border-t border-gray-200 absolute w-full">
+          <div className="px-4 py-2 space-y-1 max-h-[calc(100vh-10rem)] overflow-y-auto">
             {navItems.map((item, index) => (
               <div key={index}>
                 <button
@@ -336,4 +341,4 @@ export const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default NavbarSection;
