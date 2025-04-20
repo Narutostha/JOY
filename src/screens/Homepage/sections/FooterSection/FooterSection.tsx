@@ -1,46 +1,48 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const FooterSection: React.FC = () => {
   // Store data for footer links to make the code more maintainable
-  const exploreLinks: string[] = [
-    "About Us",
-    "Contact Us",
-    "Location",
-    "EMI",
-    "Account",
-    "Cart",
+  const exploreLinks: { name: string; path: string }[] = [
+    { name: "About Us", path: "/about-us" },
+    { name: "Contact Us", path: "/contact-us" },
+    { name: "Location", path: "/location" },
+    { name: "EMI", path: "/emi" },
+    { name: "Account", path: "/account" },
+    { name: "Cart", path: "/cart" },
   ];
 
-  const helpLinks: string[] = [
-    "Customer Support",
-    "Delivery Details",
-    "Terms & Conditions",
-    "Privacy Policy",
+  const helpLinks: { name: string; path: string }[] = [
+    { name: "Customer Support", path: "/customer-support" },
+    { name: "Delivery Details", path: "/delivery-details" },
+    { name: "Terms & Conditions", path: "/terms-conditions" },
+    { name: "Privacy Policy", path: "/privacy-policy" },
   ];
 
-  const categoryLinks: string[] = [
-    "SmartPhones",
-    "iPads",
-    "Cameras",
-    "SmartWatches",
-    "Apple Accessories",
-    "Cover and Cases",
-    "iPad Accessories",
-    "Mac Accessories",
-    "Gaming Products",
-    "HeadPhones",
-    "Speakers",
+  const categoryLinks: { name: string; path: string }[] = [
+    { name: "SmartPhones", path: "/products/smartphones" },
+    { name: "iPads", path: "/products/ipads" },
+    { name: "Cameras", path: "/products/cameras" },
+    { name: "SmartWatches", path: "/products/smartwatches" },
+    { name: "Apple Accessories", path: "/products/apple-accessories" },
+    { name: "Cover and Cases", path: "/products/covers-cases" },
+    { name: "iPad Accessories", path: "/products/ipad-accessories" },
+    { name: "Mac Accessories", path: "/products/mac-accessories" },
+    { name: "Gaming Products", path: "/products/gaming" },
+    { name: "HeadPhones", path: "/products/headphones" },
+    { name: "Speakers", path: "/products/speakers" },
   ];
 
   interface SocialIcon {
     src: string;
     alt: string;
+    link: string;
   }
 
   const socialIcons: SocialIcon[] = [
-    { src: "/iconss-7.svg", alt: "Facebook" },
-    { src: "/iconss-16.svg", alt: "Instagram" },
-    { src: "/iconss-10.svg", alt: "Twitter" },
+    { src: "/iconss-7.svg", alt: "Facebook", link: "https://facebook.com" },
+    { src: "/iconss-16.svg", alt: "Instagram", link: "https://instagram.com" },
+    { src: "/iconss-10.svg", alt: "Twitter", link: "https://twitter.com" },
   ];
 
   interface PaymentMethod {
@@ -121,12 +123,12 @@ export const FooterSection: React.FC = () => {
               Explore
             </h3>
             <ul className="space-y-3 md:space-y-4">
-              {exploreLinks.map((link, index) => (
+              {exploreLinks.map((link) => (
                 <li
-                  key={index}
+                  key={link.name}
                   className="font-normal text-white text-sm md:text-base cursor-pointer hover:text-gray-300 transition-colors"
                 >
-                  {link}
+                  <Link to={link.path}>{link.name}</Link>
                 </li>
               ))}
             </ul>
@@ -138,12 +140,12 @@ export const FooterSection: React.FC = () => {
               HELP
             </h3>
             <ul className="space-y-3 md:space-y-4">
-              {helpLinks.map((link, index) => (
+              {helpLinks.map((link) => (
                 <li
-                  key={index}
+                  key={link.name}
                   className="font-normal text-white text-sm md:text-base cursor-pointer hover:text-gray-300 transition-colors"
                 >
-                  {link}
+                  <Link to={link.path}>{link.name}</Link>
                 </li>
               ))}
             </ul>
@@ -155,12 +157,12 @@ export const FooterSection: React.FC = () => {
               Categories
             </h3>
             <ul className="space-y-2 md:space-y-3">
-              {categoryLinks.slice(0, 6).map((link, index) => (
+              {categoryLinks.slice(0, 6).map((link) => (
                 <li
-                  key={index}
+                  key={link.name}
                   className="font-normal text-white text-sm md:text-base cursor-pointer hover:text-gray-300 transition-colors"
                 >
-                  {link}
+                  <Link to={link.path}>{link.name}</Link>
                 </li>
               ))}
             </ul>
@@ -172,12 +174,12 @@ export const FooterSection: React.FC = () => {
               _
             </h3>
             <ul className="space-y-2 md:space-y-3 mt-11">
-              {categoryLinks.slice(6).map((link, index) => (
+              {categoryLinks.slice(6).map((link) => (
                 <li
-                  key={index}
+                  key={link.name}
                   className="font-normal text-white text-sm md:text-base cursor-pointer hover:text-gray-300 transition-colors"
                 >
-                  {link}
+                  <Link to={link.path}>{link.name}</Link>
                 </li>
               ))}
             </ul>
@@ -193,7 +195,9 @@ export const FooterSection: React.FC = () => {
                 {socialIcons.map((icon, index) => (
                   <a
                     key={index}
-                    href="#"
+                    href={icon.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-10 h-10 bg-[#333131] rounded-full border border-solid border-[#4d4d4d] flex items-center justify-center cursor-pointer hover:bg-[#444242] transition-colors"
                   >
                     <img

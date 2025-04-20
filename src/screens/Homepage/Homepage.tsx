@@ -1,30 +1,26 @@
 import React from "react";
-import Navbar from "../Homepage/sections/NavbarSection/NavbarSection";
-import { HeroSection } from "./sections/HeroSection";
-import { SpecialDealsSection } from "./sections/SpecialDealsSection";
-import { CameraDealsSection } from "./sections/CameraDealsSection/CameraDealsSection";
-import { SpeakerDealsSection } from "./sections/SpeakerDealsSection";
-import { CustomerReviewsSection } from "./sections/CustomerReviewsSection";
-import { NewsletterSection } from "./sections/NewsletterSection";
+import NavbarSection from "./sections/NavbarSection/NavbarSection";
+import { HeroSection } from "./sections/HeroSection/HeroSection";
+import { PopularCategories } from "./sections/PopularCategories/PopularCategories";
+import { NewArrivals } from "./sections/NewArrivals/NewArrivals";
+import { TopSelling } from "./sections/TopSelling/TopSelling";
+import { PaymentOptions } from "./sections/PaymentOptions/PaymentOptions";
+import { NewsletterSection } from "./sections/NewsletterSection/NewsletterSection";
 import { FooterSection } from "./sections/FooterSection/FooterSection";
 
 export const Homepage = () => {
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white overflow-hidden w-full relative">
-        {/* Navbar Component */}
-        <Navbar />
-        
-        {/* Rest of the page content */}
+    <div className="min-h-screen bg-white">
+      <NavbarSection />
+      <main>
         <HeroSection />
-        <SpecialDealsSection />
-        {/* Other sections... */}
-        <CameraDealsSection />
-        <SpeakerDealsSection />
-        <CustomerReviewsSection />
+        <PopularCategories />
+        <NewArrivals />
+        <TopSelling />
+        <PaymentOptions />
         <NewsletterSection />
-        <FooterSection />
-      </div>
+      </main>
+      <FooterSection />
     </div>
   );
 };
